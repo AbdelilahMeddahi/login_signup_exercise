@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../utils/constants.dart';
+import '../../../../utils/constants.dart';
 import 'center_widget_clipper.dart';
 import 'center_widget_painter.dart';
 

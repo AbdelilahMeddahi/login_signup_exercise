@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:login_signup_exercise/utils/constants.dart';
 import 'dart:math' as math;
-
-import 'center_widget/center_widget.dart';
+import 'login_screens/components/center_widget/center_widget.dart';
+import 'login_screens/components/login_content.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  //topWidget
   Widget topWidget(double screenWidth) {
     return Transform.rotate(
       angle: -35 * math.pi / 180,
@@ -32,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
+  //bottomWidget
   Widget bottomWidget(double screenWidth) {
     return Container(
       width: 1.5 * screenWidth,
@@ -68,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: bottomWidget(screenSize.width),
           ),
           CenterWidget(size : screenSize),
+          const LoginContent(),
         ],
       ),
     );
