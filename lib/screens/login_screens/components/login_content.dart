@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:login_signup_exercise/screens/login_screens/animations/change_screen_animation.dart';
 import 'package:login_signup_exercise/screens/login_screens/components/top_text.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:login_signup_exercise/utils/constants.dart';
+import 'package:login_signup_exercise/utils/helper_functions.dart';
 
 import 'bottom_text.dart';
 
@@ -10,8 +12,17 @@ enum Screens {
   welcomeBack,
 }
 
-class LoginContent extends StatelessWidget {
+class LoginContent extends StatefulWidget {
   const LoginContent({Key? key}) : super(key: key);
+
+  @override
+  State<LoginContent> createState() => _LoginContentState();
+}
+
+class _LoginContentState extends State<LoginContent>
+    with TickerProviderStateMixin {
+  late final List<Widget> createAccountContent;
+  late final List<Widget> loginContent;
 
   Widget inputField(String hint, IconData iconData) {
     return Padding(
@@ -126,16 +137,56 @@ class LoginContent extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    createAccountContent = [
+      inputField('Name', Ionicons.person_outline),
+      inputField('Email', Ionicons.mail_outline),
+      inputField('Password', Ionicons.lock_closed_outline),
+      loginButton('Sign Up'),
+      orDivider(),
+      logos(),
+    ];
+    loginContent = [
+      inputField('Email', Ionicons.mail_outline),
+      inputField('Password', Ionicons.lock_closed_outline),
+      loginButton('Login'),
+      forgotPassword(),
+    ];
+    ChangeScreenAnimation.initialize(
+      vsync: this,
+      createAccountItems: createAccountContent.length,
+      loginItems: loginContent.length,
+    );
+    for (var i = 0; i < createAccountContent.length; i++) {
+      createAccountContent[i] = HelperFunctions.wrapWithAnimationBuilder(
+        animation: ChangeScreenAnimation.createAccountAnimations[i],
+        child: createAccountContent[i],
+      );
+    }
+    for (var i = 0; i < loginContent.length; i++) {
+      loginContent[i] = HelperFunctions.wrapWithAnimationBuilder(
+        animation: ChangeScreenAnimation.loginAnimations[i],
+        child: loginContent[i],
+      );
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    ChangeScreenAnimation.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const currentScreen = Screens.createAccount;
     return Stack(
       children: [
         const Positioned(
-            top: 136,
-            left: 24,
-            child: TopText(
-              screen: currentScreen,
-            )),
+          top: 136,
+          left: 24,
+          child: TopText(),
+        ),
         Padding(
           padding: const EdgeInsets.only(top: 100),
           child: Stack(
@@ -143,21 +194,12 @@ class LoginContent extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: currentScreen == Screens.createAccount
-                    ? [
-                        inputField('Name', Ionicons.person_outline),
-                        inputField('Email', Ionicons.mail_outline),
-                        inputField('Password', Ionicons.lock_closed_outline),
-                        loginButton('Sign Up'),
-                        orDivider(),
-                        logos(),
-                      ]
-                    : [
-                        inputField('Email', Ionicons.mail_outline),
-                        inputField('Password', Ionicons.lock_closed_outline),
-                        loginButton('Login'),
-                        forgotPassword(),
-                      ],
+                children: createAccountContent,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: loginContent,
               ),
             ],
           ),
@@ -166,7 +208,7 @@ class LoginContent extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Padding(
             padding: EdgeInsets.only(bottom: 50),
-            child: BottomText(screen : currentScreen),
+            child: BottomText(),
           ),
         ),
       ],
